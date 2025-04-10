@@ -2,11 +2,11 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as semver from 'semver';
 
-import {TokenTypes, parse_to_uint32array} from '@one-ini/wasm';
 import {Buffer} from 'node:buffer';
 import {Minimatch} from 'minimatch';
+import parseIni from 'ini-simple-parser';
 
-import pkg from '../package.json';
+import pkg from '../package.json' with {type: 'json'};
 
 const escapedSep = new RegExp(path.sep.replace(/\\/g, '\\\\'), 'g');
 const matchOptions = {matchBase: true, dot: true};
@@ -85,33 +85,9 @@ export type ParseStringResult = [SectionName, SectionBody][];
  * @returns Parsed contents.  Will be truncated if there was a parse error.
  */
 export function parseBuffer(data: Buffer): ParseStringResult {
-  const parsed = parse_to_uint32array(data);
-  let cur: SectionBody = {};
-  const res: ParseStringResult = [[null, cur]];
-  let key: string | null = null;
-
-  for (let i = 0; i < parsed.length; i += 3) {
-    switch (parsed[i] as TokenTypes) {
-      case TokenTypes.Section: {
-        cur = {};
-        res.push([
-          data.toString('utf8', parsed[i + 1], parsed[i + 2]),
-          cur,
-        ]);
-        break;
-      }
-      case TokenTypes.Key:
-        key = data.toString('utf8', parsed[i + 1], parsed[i + 2]);
-        break;
-      case TokenTypes.Value: {
-        cur[key as string] = data.toString('utf8', parsed[i + 1], parsed[i + 2]);
-        break;
-      }
-      default: // Comments, etc.
-        break;
-    }
-  }
-  return res;
+  // eslint-disable-next-line @stylistic/max-len
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define, @typescript-eslint/no-deprecated
+  return parseString(data.toString('utf8'));
 }
 
 /**
@@ -123,7 +99,7 @@ export function parseBuffer(data: Buffer): ParseStringResult {
  * @deprecated Use {@link ParseBuffer} instead.
  */
 export function parseString(data: string): ParseStringResult {
-  return parseBuffer(Buffer.from(data));
+  return Object.entries(parseIni(data)) as unknown as ParseStringResult;
 }
 
 /**

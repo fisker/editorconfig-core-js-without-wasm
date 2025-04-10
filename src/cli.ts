@@ -1,6 +1,6 @@
 import * as editorconfig from './index.js';
 import {Command, type OutputConfiguration} from 'commander';
-import pkg from '../package.json';
+import pkg from '../package.json' with { type: 'json' };
 
 /**
  * Default output routine, goes to stdout.

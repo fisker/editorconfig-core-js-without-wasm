@@ -2,7 +2,7 @@
   "exclude": [
     "coverage/**",
     "**/*.test.*",
-    ".mocharc.js"
+    ".mocharc.cjs"
   ],
   "reporter": [
     "lcov",
