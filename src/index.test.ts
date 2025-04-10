@@ -18,7 +18,7 @@ describe('parse', () => {
     block_comment_end: '*/',
     block_comment_start: '/**',
   };
-  const target = path.join(__dirname, '/app.js');
+  const target = path.join(import.meta.dirname, '/app.js');
 
   it('async', async() => {
     const cfg = await editorconfig.parse(target);
@@ -67,12 +67,12 @@ describe('parseFromFiles', () => {
     trim_trailing_whitespace: true,
   };
   const configs: editorconfig.ECFile[] = [];
-  const configPath = path.resolve(__dirname, '../.editorconfig');
+  const configPath = path.resolve(import.meta.dirname, '../.editorconfig');
   configs.push({
     name: configPath,
     contents: fs.readFileSync(configPath),
   });
-  const target = path.join(__dirname, '/app.js');
+  const target = path.join(import.meta.dirname, '/app.js');
   const configs2 = [
     {name: 'early', contents: Buffer.alloc(0)},
     configs[0],
@@ -130,7 +130,7 @@ describe('parseFromFiles', () => {
     // because this path will go through a `path.dirname` before that happens.
     // It's here to catch what would happen if minimatch started to treat #
     // differently inside a pattern.
-    const bogusPath = path.resolve(__dirname, '#?*+@!()|[]{}');
+    const bogusPath = path.resolve(import.meta.dirname, '#?*+@!()|[]{}');
     const escConfigs: editorconfig.ECFile[] = [
       {
         name: `${bogusPath}/.editorconfig`,
@@ -160,7 +160,7 @@ describe('parseString', () => {
     ['*.md', {indent_size: '4'}],
   ];
 
-  const configPath = path.resolve(__dirname, '../.editorconfig');
+  const configPath = path.resolve(import.meta.dirname, '../.editorconfig');
   const contents = fs.readFileSync(configPath, 'utf8');
 
   it('sync', () => {
@@ -188,7 +188,7 @@ describe('extra behavior', () => {
   it('handles extended globs', () => {
     // These failed when we had noext: true in matchOptions
     const matcher = editorconfig.matcher({
-      root: __dirname,
+      root: import.meta.dirname,
     }, Buffer.from(`\
 [*]
 indent_size = 4
@@ -196,15 +196,15 @@ indent_size = 4
 [!(package).json]
 indent_size = 3`));
 
-    matcher(path.join(__dirname, 'package.json')).should.include({indent_size: 4});
-    matcher(path.join(__dirname, 'foo.json')).should.include({indent_size: 3});
+    matcher(path.join(import.meta.dirname, 'package.json')).should.include({indent_size: 4});
+    matcher(path.join(import.meta.dirname, 'foo.json')).should.include({indent_size: 3});
   });
 });
 
 describe('unset', () => {
   it('pair witht the value `unset`', () => {
     const matcher = editorconfig.matcher({
-      root: __dirname,
+      root: import.meta.dirname,
       unset: true,
     }, Buffer.from(`\
 [*]
@@ -213,7 +213,7 @@ indent_size = 4
 [*.json]
 indent_size = unset
 `));
-    matcher(path.join(__dirname, 'index.js')).should.include({indent_size: 4});
-    matcher(path.join(__dirname, 'index.json')).should.be.eql({ });
+    matcher(path.join(import.meta.dirname, 'index.js')).should.include({indent_size: 4});
+    matcher(path.join(import.meta.dirname, 'index.json')).should.be.eql({ });
   });
 });

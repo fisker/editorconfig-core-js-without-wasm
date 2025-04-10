@@ -11,6 +11,7 @@
     "lib/*",
     "bin/*"
   ],
+  "type": "module",
   "contributors": [
     "Hong Xu (topbug.net)",
     "Jed Mao (https://github.com/jedmao/)",
@@ -26,10 +27,10 @@
     "clean": "rimraf docs coverage lib CMakeCache.txt CMakeFiles/ Testing/ cmake_install.cmake CTestTestfile.cmake Makefile",
     "docs": "typedoc",
     "prebuild": "npm run clean",
-    "build": "cmake . && tsc",
-    "pretest": "npm run build && npm run lint",
+    "build": "tsc",
+    "pretest": "npm run build",
     "test": "npm run test:all",
-    "test:all": "mocha && ctest . --preset Test",
+    "test:all": "mocha",
     "precoverage": "npm run build -- --inlineSourceMap",
     "coverage": "c8 npm run test:all",
     "postcoverage": "tsc",
@@ -45,8 +46,8 @@
   "author": "EditorConfig Team",
   "license": "MIT",
   "dependencies": {
-    "@one-ini/wasm": "0.2.0",
     "commander": "^14.0.0",
+    "ini-simple-parser": "^1.0.1",
     "minimatch": "10.0.1",
     "semver": "^7.7.2"
   },

@@ -2,11 +2,12 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as semver from 'semver';
 
-import {TokenTypes, parse_to_uint32array} from '@one-ini/wasm';
+import {type SectionBody, type SectionName, parseBuffer} from './parse.js';
+
 import {Buffer} from 'node:buffer';
 import {Minimatch} from 'minimatch';
 
-import pkg from '../package.json';
+import pkg from '../package.json' with {type: 'json'};
 
 const escapedSep = new RegExp(path.sep.replace(/\\/g, '\\\\'), 'g');
 const matchOptions = {matchBase: true, dot: true};
@@ -126,61 +127,6 @@ const knownPropNames: (keyof KnownProps)[] = [
   'trim_trailing_whitespace',
 ];
 const knownProps = new Set<string>(knownPropNames);
-
-export type SectionName = string | null;
-export interface SectionBody {
-  [key: string]: string;
-}
-export type ParseStringResult = [SectionName, SectionBody][];
-
-/**
- * Parse a buffer using the faster one-ini WASM approach into something
- * relatively easy to deal with in JS.
- *
- * @param data UTF8-encoded bytes.
- * @returns Parsed contents.  Will be truncated if there was a parse error.
- */
-export function parseBuffer(data: Buffer): ParseStringResult {
-  const parsed = parse_to_uint32array(data);
-  let cur: SectionBody = {};
-  const res: ParseStringResult = [[null, cur]];
-  let key: string | null = null;
-
-  for (let i = 0; i < parsed.length; i += 3) {
-    switch (parsed[i] as TokenTypes) {
-      case TokenTypes.Section: {
-        cur = {};
-        res.push([
-          data.toString('utf8', parsed[i + 1], parsed[i + 2]),
-          cur,
-        ]);
-        break;
-      }
-      case TokenTypes.Key:
-        key = data.toString('utf8', parsed[i + 1], parsed[i + 2]);
-        break;
-      case TokenTypes.Value: {
-        cur[key as string] = data.toString('utf8', parsed[i + 1], parsed[i + 2]);
-        break;
-      }
-      default: // Comments, etc.
-        break;
-    }
-  }
-  return res;
-}
-
-/**
- * Parses a string.  If possible, you should always use ParseBuffer instead,
- * since this function does a UTF16-to-UTF8 conversion first.
- *
- * @param data String to parse.
- * @returns Parsed contents.  Will be truncated if there was a parse error.
- * @deprecated Use {@link parseBuffer} instead.
- */
-export function parseString(data: string): ParseStringResult {
-  return parseBuffer(Buffer.from(data));
-}
 
 /**
  * Gets a list of *potential* filenames based on the path of the target
@@ -662,3 +608,11 @@ export function matcher(
     return combine(resolvedFilePath, configs, processedOptions);
   };
 }
+
+export {
+  parseString,
+  parseBuffer,
+  type SectionName,
+  type SectionBody,
+  type ParseStringResult,
+} from './parse.js';
