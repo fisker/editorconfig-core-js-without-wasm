@@ -1,7 +1,15 @@
 # EditorConfig JavaScript Core
 
-[![Tests](https://github.com/fisker/editorconfig-core-js-without-wasm/actions/workflows/node.js.yml/badge.svg)](https://github.com/fisker/editorconfig-core-js-without-wasm/actions/workflows/node.js.yml)
-[![Coverage Status](https://coveralls.io/repos/github/fisker/editorconfig-core-js-without-wasm/badge.svg?branch=dev)](https://coveralls.io/github/fisker/editorconfig-core-js-without-wasm?branch=dev)
+[![Npm Version][package_version_badge]][package_link]
+[![MIT License][license_badge]][license_link]
+[![Coverage][coverage_badge]][coverage_link]
+
+[coverage_badge]: https://img.shields.io/coverallsCoverage/github/fisker/editorconfig-core-js-without-wasm?branch=dev&style=flat-square
+[coverage_link]: https://coveralls.io/github/fisker/editorconfig-core-js-without-wasm?branch=dev
+[license_badge]: https://img.shields.io/npm/l/editorconfig-without-wasm.svg?style=flat-square
+[license_link]: https://github.com/fisker/editorconfig-without-wasm/blob/main/license
+[package_version_badge]: https://img.shields.io/npm/v/editorconfig-without-wasm.svg?style=flat-square
+[package_link]: https://www.npmjs.com/package/editorconfig-without-wasm
 
 The EditorConfig JavaScript core will provide the same functionality as the
 [EditorConfig C Core][] and [EditorConfig Python Core][].
