@@ -7,8 +7,7 @@ import {type SectionBody, type SectionName, parseBuffer} from './parse.js';
 import {Buffer} from 'node:buffer';
 import {Minimatch} from 'minimatch';
 
-import pkg from '../package.json' with {type: 'json'};
-
+const EDITORCONFIG_VERSION = '3.0.1';
 const escapedSep = new RegExp(path.sep.replace(/\\/g, '\\\\'), 'g');
 const matchOptions = {matchBase: true, dot: true};
 
@@ -160,7 +159,7 @@ function processMatches(matches: Props, version: string): Props {
     'indent_style' in matches &&
     matches.indent_style === 'tab' &&
     !('indent_size' in matches) &&
-    semver.gte(version, '0.10.0')
+    (version === EDITORCONFIG_VERSION || semver.gte(version, '0.10.0'))
   ) {
     matches.indent_size = 'tab';
   }
@@ -430,7 +429,7 @@ function opts(filepath: string, options: ParseOptions = {}): [
     resolvedFilePath,
     {
       config: options.config || '.editorconfig',
-      version: options.version || pkg.version,
+      version: options.version || EDITORCONFIG_VERSION,
       root: path.resolve(options.root || path.parse(resolvedFilePath).root),
       files: options.files,
       cache: options.cache,
