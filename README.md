@@ -1,10 +1,19 @@
 # EditorConfig JavaScript Core
 
-[![Tests](https://github.com/editorconfig/editorconfig-core-js/actions/workflows/node.js.yml/badge.svg)](https://github.com/editorconfig/editorconfig-core-js/actions/workflows/node.js.yml)
-[![Coverage Status](https://coveralls.io/repos/github/editorconfig/editorconfig-core-js/badge.svg?branch=master)](https://coveralls.io/github/editorconfig/editorconfig-core-js?branch=master)
+[![Tests](https://github.com/fisker/editorconfig-core-js-without-wasm/actions/workflows/node.js.yml/badge.svg)](https://github.com/fisker/editorconfig-core-js-without-wasm/actions/workflows/node.js.yml)
+[![Coverage Status](https://coveralls.io/repos/github/fisker/editorconfig-core-js-without-wasm/badge.svg?branch=dev)](https://coveralls.io/github/fisker/editorconfig-core-js-without-wasm?branch=dev)
 
 The EditorConfig JavaScript core will provide the same functionality as the
 [EditorConfig C Core][] and [EditorConfig Python Core][].
+
+## Note
+
+This is a fork of [editorconfig/editorconfig-core-js](https://github.com/editorconfig/editorconfig-core-js)
+
+### Different from the official package
+
+- Replaced the dependency `@one-ini/wasm` that [`editorconfig`](https://www.npmjs.com/package/editorconfig) uses.
+- Ship in ESM module.
 
 ## Installation
 
@@ -13,13 +22,13 @@ You need [node][] to use this package.
 To install the package locally:
 
 ```bash
-$ npm install editorconfig
+$ npm install editorconfig-without-wasm
 ```
 
 To install the package system-wide:
 
 ```bash
-$ npm install -g editorconfig
+$ npm install -g editorconfig-without-wasm
 ```
 
 ## Usage
@@ -90,7 +99,7 @@ filePath into a single object.
 Example:
 
 ```js
-const editorconfig = require('editorconfig');
+const editorconfig = require('editorconfig-without-wasm');
 const path = require('path');
 
 const filePath = path.join(__dirname, 'sample.js');
@@ -138,7 +147,7 @@ Low-level interface, which exists only for backward-compatibility.  Deprecated.
 Example:
 
 ```js
-const editorconfig = require('editorconfig');
+const editorconfig = require('editorconfig-without-wasm');
 const fs = require('fs');
 const path = require('path');
 

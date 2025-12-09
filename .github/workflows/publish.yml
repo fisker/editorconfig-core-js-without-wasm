@@ -2,16 +2,18 @@ name: Publish Package to npmjs
 on:
   release:
     types: [published]
-  workflow_call:
-    secrets:
-      NPM_TOKEN:
-        required: true
+  # workflow_call:
+  #   secrets:
+  #     NPM_TOKEN:
+  #       required: true
+
+permissions: {}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       id-token: write
     steps:
       - uses: actions/checkout@v4
@@ -21,18 +23,16 @@ jobs:
         uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 'lts/*'
           registry-url: 'https://registry.npmjs.org'
           cache: pnpm
       - run: pnpm install
       - run: npm run pub
-      - name: Deploy Docs
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs
-          publish_branch: gh-pages
+      # - name: Deploy Docs
+      #   uses: peaceiris/actions-gh-pages@v4
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: docs
+      #     publish_branch: gh-pages
       - run: npm pkg delete devDependencies scripts packageManager pnpm
-      - run: npm publish --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npm publish --access public
