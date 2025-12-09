@@ -19,4 +19,9 @@ export default [
       '@typescript-eslint/no-unnecessary-type-conversion': 'off',
     },
   },
+  {
+    rules: {
+      'n/no-unsupported-features/node-builtins': 'off',
+    },
+  },
 ];
