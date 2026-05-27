@@ -6,6 +6,7 @@ export default [
     ignores: [
       'lib/**',
       '**/*.d.ts',
+      'src/ini-simple-parser/**',
     ],
   },
   ...base,

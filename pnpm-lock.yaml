@@ -11,9 +11,6 @@ importers:
       commander:
         specifier: ^14.0.3
         version: 14.0.3
-      ini-simple-parser:
-        specifier: ^1.0.1
-        version: 1.0.1
       minimatch:
         specifier: ~10.2.4
         version: 10.2.4
@@ -987,9 +984,6 @@ packages:
   imurmurhash@0.1.4:
     resolution: {integrity: sha512-JmXMZ6wuvDmLiHEml9ykzqO6lwFbof0GG4IkcGaENdCRDDmMVnny7s5HsIgHCbaq0w2MyPhDqkhTUgS2LU2PHA==}
     engines: {node: '>=0.8.19'}
-
-  ini-simple-parser@1.0.1:
-    resolution: {integrity: sha512-myU5nhF2miBQP3tO/giUi+8BI9QhfM/XRZd0RD7G0p+40K6KPAwxMDtH3UEtJ2XJZbd+ZiQOoGh432DTYfzNVQ==}
 
   ip-address@10.2.0:
     resolution: {integrity: sha512-/+S6j4E9AHvW9SWMSEY9Xfy66O5PWvVEJ08O0y5JGyEKQpojb0K0GKpz/v5HJ/G0vi3D2sjGK78119oXZeE0qA==}
@@ -2604,8 +2598,6 @@ snapshots:
   ignore@7.0.5: {}
 
   imurmurhash@0.1.4: {}
-
-  ini-simple-parser@1.0.1: {}
 
   ip-address@10.2.0: {}
 
