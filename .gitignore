@@ -14,3 +14,4 @@ lib/
 Makefile
 node_modules/
 docs/
+/test.ts

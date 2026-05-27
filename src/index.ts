@@ -3,7 +3,7 @@ import * as path from 'node:path';
 import * as semver from 'semver';
 
 import {Minimatch, escape} from 'minimatch';
-import {type SectionBody, type SectionName, parseBuffer} from './parse.js';
+import {type SectionBody, type SectionName, parseBuffer} from './parse.ts';
 
 import {Buffer} from 'node:buffer';
 
@@ -607,4 +607,4 @@ export {
   type SectionName,
   type SectionBody,
   type ParseStringResult,
-} from './parse.js';
+} from './parse.ts';

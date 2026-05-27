@@ -1,13 +1,5 @@
 /* MAIN */
 
-type Options = {
-  inferBooleans?: boolean,
-  inferNulls?: boolean,
-  inferNumbers?: boolean,
-  inferStrings?: boolean,
-  inlineComments?: boolean
-};
-
 type Primitive = null | boolean | number | string;
 
 type Results = Partial<{
@@ -16,4 +8,4 @@ type Results = Partial<{
 
 /* EXPORT */
 
-export type {Options, Primitive, Results};
+export type {Primitive, Results};

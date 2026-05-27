@@ -23,6 +23,7 @@ export default [
   {
     rules: {
       'n/no-unsupported-features/node-builtins': 'off',
+      'n/file-extension-in-import': 'off',
     },
   },
 ];
