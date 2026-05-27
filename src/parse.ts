@@ -1,4 +1,4 @@
-import parseIni, {type Results} from 'ini-simple-parser';
+import parseIni, {type Results} from './ini-simple-parser/index.js';
 import type {Buffer} from 'node:buffer';
 
 export type SectionName = string | null;
