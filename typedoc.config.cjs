@@ -1,7 +1,9 @@
+// @ts-check
+
 'use strict';
 
 /** @type {import('typedoc').TypeDocOptions} */
-module.exports = {
+const config = {
   entryPoints: [
     'src/index.ts',
   ],
@@ -21,3 +23,5 @@ module.exports = {
   sort: ['static-first', 'alphabetical'],
   exclude: ['tests/*'],
 };
+
+module.exports = config;

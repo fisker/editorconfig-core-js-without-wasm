@@ -2,12 +2,12 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as semver from 'semver';
 
+import {Minimatch, escape} from 'minimatch';
 import {type SectionBody, type SectionName, parseBuffer} from './parse.js';
 
 import {Buffer} from 'node:buffer';
-import {Minimatch} from 'minimatch';
 
-const EDITORCONFIG_VERSION = '3.0.1';
+const EDITORCONFIG_VERSION = '3.0.2';
 const escapedSep = new RegExp(path.sep.replace(/\\/g, '\\\\'), 'g');
 const matchOptions = {matchBase: true, dot: true};
 
@@ -278,16 +278,9 @@ function processFileContents(
       pathPrefix = pathPrefix.replace(escapedSep, '/');
     }
 
-    // After Windows path backslash's are turned into slashes, so that
-    // the backslashes we add here aren't turned into forward slashes:
-
-    // All of these characters are special to minimatch, but can be
-    // forced into path names on many file systems.  Escape them. Note
-    // that these are in the order of the case statement in minimatch.
-    pathPrefix = pathPrefix.replace(/[?*+@!()|[\]{}]/g, '\\$&');
-    // I can't think of a way for this to happen in the filesystems I've
-    // seen (because of the path.dirname above), but let's be thorough.
-    pathPrefix = pathPrefix.replace(/^#/, '\\#');
+    // Use minimatch's escape() with bracket escaping for the path prefix.
+    pathPrefix = escape(pathPrefix, {windowsPathsNoEscape: true});
+    pathPrefix = pathPrefix.replace(/^#/, '[#]');
 
     const globbed: GlobbedProps = parseBuffer(contents).map(([name, body]) => [
       name,

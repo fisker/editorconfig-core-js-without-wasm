@@ -2,26 +2,23 @@ name: Publish Package to npmjs
 on:
   release:
     types: [published]
-  # workflow_call:
-  #   secrets:
-  #     NPM_TOKEN:
-  #       required: true
 
 permissions: {}
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    # environment: publish
     permissions:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: true
-      - name: install corepack
+      - name: install pnpm
         uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 'lts/*'
           registry-url: 'https://registry.npmjs.org'
@@ -35,4 +32,4 @@ jobs:
       #     publish_dir: docs
       #     publish_branch: gh-pages
       - run: npm pkg delete devDependencies scripts packageManager pnpm
-      - run: npm publish --access public
+      - run: npm publish --access public --provenance
