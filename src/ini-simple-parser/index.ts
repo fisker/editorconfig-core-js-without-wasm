@@ -18,7 +18,7 @@ const parse = ( input: string ): Results => {
 
   /* PARSING */
 
-  const results: Results = {};
+  const results: Results = Object.create(null);
   const lines = input.split ( /\r?\n|\r/g );
 
   let section = results;
@@ -42,10 +42,9 @@ const parse = ( input: string ): Results => {
         const key = line.slice ( 1, -1 );
 
         // @ts-ignore
-        section = results[key] =
-          Object.prototype.hasOwnProperty.call(results, key) && typeof results[key] !== 'string' ?
-          Object.assign({}, results[key]):
-          {};
+        section = Object.prototype.hasOwnProperty.call(results, key) && typeof results[key] !== 'string' ?
+          results[key] :
+          (results[key] = Object.create(null));
 
         continue;
 
