@@ -1,7 +1,7 @@
 /* IMPORT */
 
-import {inferBoolean, inferNull, inferNumber, inferString, stripComments} from './utils';
-import type {Options, Primitive, Results} from './types';
+import {inferBoolean, inferNull, inferNumber, inferString, stripComments} from './utils.js';
+import type {Options, Primitive, Results} from './types.js';
 
 /* MAIN */
 
