@@ -1,7 +1,7 @@
 /* IMPORT */
 
-import {inferBoolean, inferNull, inferNumber, inferString, stripComments} from './utils.js';
-import type {Options, Primitive, Results} from './types.js';
+import {inferBoolean, inferNull, inferNumber, inferString, stripComments} from './utils.ts';
+import type {Options, Primitive, Results} from './types.ts';
 
 /* MAIN */
 
@@ -50,7 +50,7 @@ const parse = ( input: string, options: Options = {} ): Results => {
 
         // @ts-ignore
         section = results[key] =
-          Object.prototype.hasOwnProperty.call(results, key) ?
+          Object.prototype.hasOwnProperty.call(results, key) && typeof results[key] !== 'string' ?
           Object.assign({}, results[key]):
           {};
 

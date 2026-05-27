@@ -1,7 +1,7 @@
 
 /* IMPORT */
 
-import type {Primitive} from './types.js';
+import type {Primitive} from './types.ts';
 
 /* MAIN */
 
