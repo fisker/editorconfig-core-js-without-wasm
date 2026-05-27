@@ -1,6 +1,5 @@
 /* IMPORT */
 
-import {stripComments} from './utils.ts';
 import type {Primitive, Results} from './types.ts';
 
 /* MAIN */
@@ -64,8 +63,6 @@ const parse = ( input: string ): Results => {
 
       let key: Primitive = line.slice ( 0, delimiterIndex ).trim ();
       let value: Primitive = line.slice ( delimiterIndex + 1 ).trim ();
-
-      value = stripComments ( value );
 
       section[`${key}`] = value;
 
