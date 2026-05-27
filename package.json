@@ -70,7 +70,7 @@
     "@typescript-eslint/parser": "8.56.1",
     "c8": "11.0.0",
     "chai": "4.5.0",
-    "release-it": "^19.0.6",
+    "release-it": "20.0.1",
     "eslint": "10.0.2",
     "eslint-plugin-jsdoc": "62.7.1",
     "mocha": "^11.7.5",
