@@ -48,7 +48,11 @@ const parse = ( input: string, options: Options = {} ): Results => {
 
         const key = line.slice ( 1, -1 );
 
-        section = results[key] = {};
+        // @ts-ignore
+        section = results[key] =
+          Object.prototype.hasOwnProperty.call(results, key) ?
+          Object.assign({}, results[key]):
+          {};
 
         continue;
 
