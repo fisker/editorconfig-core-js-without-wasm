@@ -5,36 +5,6 @@ import type {Primitive} from './types.ts';
 
 /* MAIN */
 
-const inferBoolean = ( value: Primitive ): Primitive => {
-  if ( !isString ( value ) || !value.length ) return value;
-  if ( value === 'true' || value === 'TRUE' ) return true;
-  if ( value === 'false' || value === 'FALSE' ) return false;
-  return value;
-};
-
-const inferNull = ( value: Primitive ): Primitive => {
-  if ( !isString ( value ) || !value.length ) return value;
-  if ( value === 'null' || value === 'NULL' ) return null;
-  return value;
-};
-
-const inferNumber = ( value: Primitive ): Primitive => {
-  if ( !isString ( value ) || !value.length ) return value;
-  const firstChar = value.charCodeAt ( 0 );
-  if ( firstChar !== 43 && firstChar !== 45 && firstChar !== 46 && ( firstChar < 48 || firstChar > 57 ) ) return value;
-  const number = Number ( value );
-  if ( !Number.isNaN ( number ) ) value = number;
-  return value;
-};
-
-const inferString = ( value: Primitive ): Primitive => {
-  if ( !isString ( value ) || !value.length ) return value;
-  const firstChar = value[0];
-  const lastChar = value[value.length - 1];
-  if ( firstChar === "'" && lastChar === "'" ) return value.slice ( 1, -1 );
-  if ( firstChar === '"' && lastChar === '"' ) return value.slice ( 1, -1 );
-  return value;
-};
 
 const isString = ( value: unknown ): value is string => {
   return typeof value === 'string';
@@ -52,4 +22,4 @@ const stripComments = ( value: Primitive ): Primitive => {
 
 /* EXPORT */
 
-export {inferBoolean, inferNull, inferNumber, inferString, isString, stripComments};
+export {stripComments};

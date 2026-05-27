@@ -1,14 +1,14 @@
 /* IMPORT */
 
-import {inferBoolean, inferNull, inferNumber, inferString, stripComments} from './utils.ts';
-import type {Options, Primitive, Results} from './types.ts';
+import {stripComments} from './utils.ts';
+import type {Primitive, Results} from './types.ts';
 
 /* MAIN */
 
 //TODO: Maybe make this a special-case of a spec-compliant configurable TOML parser
 //TODO: Maybe write this a bit more low-level, for a bit better performance, potentially
 
-const parse = ( input: string, options: Options = {} ): Results => {
+const parse = ( input: string ): Results => {
 
   /* CONSTANTS */
 
@@ -16,12 +16,6 @@ const parse = ( input: string, options: Options = {} ): Results => {
   const COMMENT2 = 59; // ;
   const SECTION_START = 91; // [
   const SECTION_END = 93; // ]
-
-  const INFER_BOOLEANS = !!options.inferBooleans;
-  const INFER_NULLS = !!options.inferNulls;
-  const INFER_NUMBERS = !!options.inferNumbers;
-  const INFER_STRINGS = !!options.inferStrings;
-  const INLINE_COMMENTS = !!options.inlineComments;
 
   /* PARSING */
 
@@ -71,26 +65,7 @@ const parse = ( input: string, options: Options = {} ): Results => {
       let key: Primitive = line.slice ( 0, delimiterIndex ).trim ();
       let value: Primitive = line.slice ( delimiterIndex + 1 ).trim ();
 
-      if ( INLINE_COMMENTS ) {
-        value = stripComments ( value );
-      }
-
-      if ( INFER_BOOLEANS ) {
-        value = inferBoolean ( value );
-      }
-
-      if ( INFER_NULLS ) {
-        value = inferNull ( value );
-      }
-
-      if ( INFER_NUMBERS ) {
-        value = inferNumber ( value );
-      }
-
-      if ( INFER_STRINGS ) {
-        key = inferString ( key );
-        value = inferString ( value );
-      }
+      value = stripComments ( value );
 
       section[`${key}`] = value;
 
@@ -109,4 +84,4 @@ const parse = ( input: string, options: Options = {} ): Results => {
 /* EXPORT */
 
 export default parse;
-export type {Options, Results};
+export type {Results};
