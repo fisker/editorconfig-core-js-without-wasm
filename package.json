@@ -1,6 +1,6 @@
 {
   "name": "editorconfig-without-wasm",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "EditorConfig File Locator and Interpreter for Node.js",
   "keywords": [
     "editorconfig",
