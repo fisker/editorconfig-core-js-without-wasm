@@ -20,5 +20,7 @@
     "rewriteRelativeImportExtensions": true,
     "types": ["node", "mocha"]
   },
-  "include": ["src/"]
+  "include": [
+    "src/"
+  ]
 }

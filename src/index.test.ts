@@ -7,6 +7,8 @@ import {expect, should} from 'chai';
 import {Buffer} from 'node:buffer';
 import process from 'node:process';
 
+const __dirname = import.meta.dirname;
+
 should();
 
 describe('parse', () => {
@@ -22,7 +24,7 @@ describe('parse', () => {
     block_comment_end: '*/',
     block_comment_start: '/**',
   });
-  const target = path.join(import.meta.dirname, '/app.js');
+  const target = path.join(__dirname, '/app.js');
 
   it('async', async () => {
     const cfg = await editorconfig.parse(target);
@@ -39,13 +41,13 @@ describe('parse', () => {
   });
 
   it('stops at the filesystem root when the configured root is not an ancestor', async () => {
-    const root = path.join(import.meta.dirname, 'not-an-ancestor');
+    const root = path.join(__dirname, 'not-an-ancestor');
     const cfg = await editorconfig.parse(target, {root});
     expect(cfg).to.eql(expected);
   });
 
   it('stops at the filesystem root synchronously when the configured root is not an ancestor', () => {
-    const root = path.join(import.meta.dirname, 'not-an-ancestor');
+    const root = path.join(__dirname, 'not-an-ancestor');
     const cfg = editorconfig.parseSync(target, {root});
     expect(cfg).to.eql(expected);
   });
@@ -116,12 +118,12 @@ describe('parseFromFiles', () => {
     trim_trailing_whitespace: true,
   };
   const configs: editorconfig.ECFile[] = [];
-  const configPath = path.resolve(import.meta.dirname, '../.editorconfig');
+  const configPath = path.resolve(__dirname, '../.editorconfig');
   configs.push({
     name: configPath,
     contents: fs.readFileSync(configPath),
   });
-  const target = path.join(import.meta.dirname, '/app.js');
+  const target = path.join(__dirname, '/app.js');
   const configs2 = [
     {name: 'early', contents: Buffer.alloc(0)},
     configs[0],
@@ -179,7 +181,7 @@ describe('parseFromFiles', () => {
     // because this path will go through a `path.dirname` before that happens.
     // It's here to catch what would happen if minimatch started to treat #
     // differently inside a pattern.
-    const bogusPath = path.resolve(import.meta.dirname, '#?*+@!()|[]{}');
+    const bogusPath = path.resolve(__dirname, '#?*+@!()|[]{}');
     const escConfigs: editorconfig.ECFile[] = [
       {
         name: `${bogusPath}/.editorconfig`,
@@ -209,7 +211,7 @@ describe('parseString', () => {
     ['*.md', {indent_size: '4'}],
   ];
 
-  const configPath = path.resolve(import.meta.dirname, '../.editorconfig');
+  const configPath = path.resolve(__dirname, '../.editorconfig');
   const contents = fs.readFileSync(configPath, 'utf8');
 
   it('sync', () => {
@@ -303,7 +305,7 @@ describe('extra behavior', () => {
   it('handles extended globs', () => {
     // These failed when we had noext: true in matchOptions
     const matcher = editorconfig.matcher({
-      root: import.meta.dirname,
+      root: __dirname,
     }, Buffer.from(`\
 [*]
 indent_size = 4
@@ -311,15 +313,15 @@ indent_size = 4
 [!(package).json]
 indent_size = 3`));
 
-    expect(matcher(path.join(import.meta.dirname, 'package.json'))).to.include({indent_size: 4});
-    expect(matcher(path.join(import.meta.dirname, 'foo.json'))).to.include({indent_size: 3});
+    expect(matcher(path.join(__dirname, 'package.json'))).to.include({indent_size: 4});
+    expect(matcher(path.join(__dirname, 'foo.json'))).to.include({indent_size: 3});
   });
 });
 
 describe('unset', () => {
   it('pair with the value `unset`', () => {
     const matcher = editorconfig.matcher({
-      root: import.meta.dirname,
+      root: __dirname,
       unset: true,
     }, Buffer.from(`\
 [*]
@@ -329,7 +331,7 @@ indent_size = 4
 indent_size = unset
 `));
 
-    expect(matcher(path.join(import.meta.dirname, 'index.js'))).to.include({indent_size: 4});
-    expect(matcher(path.join(import.meta.dirname, 'index.json'))).to.be.eql(Object.create(null));
+    expect(matcher(path.join(__dirname, 'index.js'))).to.include({indent_size: 4});
+    expect(matcher(path.join(__dirname, 'index.json'))).to.be.eql(Object.create(null));
   });
 });

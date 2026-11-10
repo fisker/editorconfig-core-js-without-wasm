@@ -1,11 +1,10 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as semver from 'semver';
+import {Buffer} from 'node:buffer';
 
 import {Minimatch, escape} from 'minimatch';
 import {type SectionBody, type SectionName, parseBuffer} from './parse.ts';
-
-import {Buffer} from 'node:buffer';
 
 const EDITORCONFIG_VERSION = '3.0.2';
 const escapedSep = new RegExp(path.sep.replace(/\\/g, '\\\\'), 'g');
@@ -14,49 +13,43 @@ const matchOptions = {matchBase: true, dot: true};
 // These are specified by the editorconfig script
 export interface KnownProps {
   /**
-   * Specifies the character set. Use of `utf-8-bom` is discouraged.
-   */
-  charset?:
-    | 'latin1' |
-    'utf-8' |
-    'utf-8-bom' |
-    'utf-16be' |
-    'utf-16le' |
-    'unset';
+  * Specifies the character set. Use of `utf-8-bom` is discouraged.
+  */
+  charset?: 'latin1' | 'utf-8' | 'utf-8-bom' | 'utf-16be' | 'utf-16le' | 'unset';
 
   /**
-   * Specifies how line breaks are represented.
-   */
+  * Specifies how line breaks are represented.
+  */
   end_of_line?: 'lf' | 'crlf' | 'unset';
 
   /**
-   * Specifies the number of columns used for each indentation level
-   * and the width of soft tabs (when supported).
-   *
-   * If `indent_size` in the config is set to `tab`,
-   * the value of this property will be:
-   * - the same as the value of the {@link KnownProps.tab_width tab_width}
-   * if it is specified;
-   * - `tab` if it is not.
-   */
+  * Specifies the number of columns used for each indentation level
+  * and the width of soft tabs (when supported).
+  *
+  * If `indent_size` in the config is set to `tab`,
+  * the value of this property will be:
+  * - the same as the value of the {@link KnownProps.tab_width tab_width}
+  * if it is specified;
+  * - `tab` if it is not.
+  */
   indent_size?: number | 'tab' | 'unset';
 
   /**
-   * Specifies whether tabs or spaces should be used for indentation.
-   * - `tab`: Use hard tabs for indentation,
-   * filling the remainder with spaces if needed.
-   * - `space`: Use spaces for indentation.
-   */
+  * Specifies whether tabs or spaces should be used for indentation.
+  * - `tab`: Use hard tabs for indentation,
+  * filling the remainder with spaces if needed.
+  * - `space`: Use spaces for indentation.
+  */
   indent_style?: 'tab' | 'space' | 'unset';
 
   /**
-   * Specifies whether a file should end with a newline character when saved.
-   * - `true`: Ensure the file ends with a newline.
-   * - `false`: Ensure the file does not end with a newline.
-   *
-   * Editors must not insert newlines in empty files
-   * when saving those files, even if `insert_final_newline` = true.
-   */
+  * Specifies whether a file should end with a newline character when saved.
+  * - `true`: Ensure the file ends with a newline.
+  * - `false`: Ensure the file does not end with a newline.
+  *
+  * Editors must not insert newlines in empty files
+  * when saving those files, even if `insert_final_newline` = true.
+  */
   insert_final_newline?: true | false | 'unset';
 
   /**
@@ -506,10 +499,10 @@ function getAllConfigsSync(
  * @param options Potentially-incomplete options.
  * @returns The fully-qualified target file name and the normalized options.
  */
-function opts(
-  filepath: string,
-  options: ParseOptions = {}
-): [fileName: string, normalizedOptions: ParseOptions] {
+function opts(filepath: string, options: ParseOptions = {}): [
+  fileName: string,
+  normalizedOptions: ParseOptions,
+] {
   const resolvedFilePath = path.resolve(filepath);
   return [
     resolvedFilePath,
@@ -596,8 +589,7 @@ export function parseFromFilesSync(
   const configs = [];
   for (const ecf of files) {
     let cfg: ProcessedFileConfig | undefined = undefined;
-    if (!options.cache || !(cfg = options.cache.get(ecf.name))) {
-      // Single "="!
+    if (!options.cache || !(cfg = options.cache.get(ecf.name))) { // Single "="!
       cfg = processFileContents(ecf.name, ecf.contents, processedOptions);
     }
     if (!cfg.notfound) {
@@ -656,7 +648,10 @@ export async function parse(
  * @param options All options
  * @returns Combined properties for the target file
  */
-export function parseSync(filepath: string, options: ParseOptions = {}): Props {
+export function parseSync(
+  filepath: string,
+  options: ParseOptions = {}
+): Props {
   const [resolvedFilePath, processedOptions] = opts(filepath, options);
   const filepaths = getConfigFileNames(resolvedFilePath, processedOptions);
   const configs = getAllConfigsSync(filepaths, processedOptions);
