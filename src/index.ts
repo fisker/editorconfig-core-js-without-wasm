@@ -1,6 +1,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as semver from 'semver';
+
 import {Minimatch, escape} from 'minimatch';
 import {Buffer} from 'node:buffer';
 
@@ -35,11 +36,11 @@ export interface KnownProps {
   indent_size?: number | 'tab' | 'unset';
 
   /**
-  * Specifies whether tabs or spaces should be used for indentation.
-  * - `tab`: Use hard tabs for indentation,
-  * filling the remainder with spaces if needed.
-  * - `space`: Use spaces for indentation.
-  */
+   * Specifies whether tabs or spaces should be used for indentation.
+   * - `tab`: Use hard tabs for indentation,
+   * filling the remainder with spaces if needed.
+   * - `space`: Use spaces for indentation.
+   */
   indent_style?: 'tab' | 'space' | 'unset';
 
   /**
@@ -53,11 +54,11 @@ export interface KnownProps {
   insert_final_newline?: true | false | 'unset';
 
   /**
-   * Specifies the number of columns used to represent a tab character.
-   *
-   * This defaults to the value of {@link KnownProps.indent_size indent_size}
-   * and should not usually need to be specified.
-   */
+  * Specifies the number of columns used to represent a tab character.
+  *
+  * This defaults to the value of {@link KnownProps.indent_size indent_size}
+  * and should not usually need to be specified.
+  */
   tab_width?: number | 'unset';
 
   /**
