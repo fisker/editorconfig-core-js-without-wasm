@@ -1,9 +1,9 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as semver from 'semver';
+import {Minimatch, escape} from 'minimatch';
 import {Buffer} from 'node:buffer';
 
-import {Minimatch, escape} from 'minimatch';
 import {type SectionBody, type SectionName, parseBuffer} from './parse.ts';
 
 const EDITORCONFIG_VERSION = '3.0.2';
