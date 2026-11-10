@@ -1,39 +1,45 @@
-import * as fs from 'node:fs';
-import * as path from 'node:path';
-import * as semver from 'semver';
+import * as fs from "node:fs";
+import * as path from "node:path";
+import * as semver from "semver";
 
-import {Minimatch, escape} from 'minimatch';
-import {type SectionBody, type SectionName, parseBuffer} from './parse.ts';
+import { Minimatch, escape } from "minimatch";
+import { type SectionBody, type SectionName, parseBuffer } from "./parse.ts";
 
-import {Buffer} from 'node:buffer';
+import { Buffer } from "node:buffer";
 
-const EDITORCONFIG_VERSION = '3.0.2';
-const escapedSep = new RegExp(path.sep.replace(/\\/g, '\\\\'), 'g');
-const matchOptions = {matchBase: true, dot: true};
+const EDITORCONFIG_VERSION = "3.0.2";
+const escapedSep = new RegExp(path.sep.replace(/\\/g, "\\\\"), "g");
+const matchOptions = { matchBase: true, dot: true };
 
 // These are specified by the editorconfig script
 export interface KnownProps {
   /**
-  * Specifies the character set. Use of `utf-8-bom` is discouraged.
-  */
-  charset?: 'latin1' | 'utf-8' | 'utf-8-bom' | 'utf-16be' | 'utf-16le' | 'unset';
+   * Specifies the character set. Use of `utf-8-bom` is discouraged.
+   */
+  charset?:
+    | "latin1"
+    | "utf-8"
+    | "utf-8-bom"
+    | "utf-16be"
+    | "utf-16le"
+    | "unset";
 
   /**
-  * Specifies how line breaks are represented.
-  */
-  end_of_line?: 'lf' | 'crlf' | 'unset';
+   * Specifies how line breaks are represented.
+   */
+  end_of_line?: "lf" | "crlf" | "unset";
 
   /**
-  * Specifies the number of columns used for each indentation level
-  * and the width of soft tabs (when supported).
-  *
-  * If `indent_size` in the config is set to `tab`,
-  * the value of this property will be:
-  * - the same as the value of the {@link KnownProps.tab_width tab_width}
-  * if it is specified;
-  * - `tab` if it is not.
-  */
-  indent_size?: number | 'tab' | 'unset';
+   * Specifies the number of columns used for each indentation level
+   * and the width of soft tabs (when supported).
+   *
+   * If `indent_size` in the config is set to `tab`,
+   * the value of this property will be:
+   * - the same as the value of the {@link KnownProps.tab_width tab_width}
+   * if it is specified;
+   * - `tab` if it is not.
+   */
+  indent_size?: number | "tab" | "unset";
 
   /**
    * Specifies whether tabs or spaces should be used for indentation.
@@ -41,25 +47,25 @@ export interface KnownProps {
    * filling the remainder with spaces if needed.
    * - `space`: Use spaces for indentation.
    */
-  indent_style?: 'tab' | 'space' | 'unset';
+  indent_style?: "tab" | "space" | "unset";
 
   /**
-  * Specifies whether a file should end with a newline character when saved.
-  * - `true`: Ensure the file ends with a newline.
-  * - `false`: Ensure the file does not end with a newline.
-  *
-  * Editors must not insert newlines in empty files
-  * when saving those files, even if `insert_final_newline` = true.
-  */
-  insert_final_newline?: true | false | 'unset';
+   * Specifies whether a file should end with a newline character when saved.
+   * - `true`: Ensure the file ends with a newline.
+   * - `false`: Ensure the file does not end with a newline.
+   *
+   * Editors must not insert newlines in empty files
+   * when saving those files, even if `insert_final_newline` = true.
+   */
+  insert_final_newline?: true | false | "unset";
 
   /**
-  * Specifies the number of columns used to represent a tab character.
-  *
-  * This defaults to the value of {@link KnownProps.indent_size indent_size}
-  * and should not usually need to be specified.
-  */
-  tab_width?: number | 'unset';
+   * Specifies the number of columns used to represent a tab character.
+   *
+   * This defaults to the value of {@link KnownProps.indent_size indent_size}
+   * and should not usually need to be specified.
+   */
+  tab_width?: number | "unset";
 
   /**
    * Specifies whether all whitespace characters
@@ -67,7 +73,7 @@ export interface KnownProps {
    * - `true`: Remove all trailing whitespace before newlines.
    * - `false`: Preserve trailing whitespace.
    */
-  trim_trailing_whitespace?: true | false | 'unset';
+  trim_trailing_whitespace?: true | false | "unset";
 }
 
 export interface UnknownMap {
@@ -117,13 +123,13 @@ export interface ParseOptions {
 }
 
 const knownPropNames: (keyof KnownProps)[] = [
-  'charset',
-  'end_of_line',
-  'indent_size',
-  'indent_style',
-  'insert_final_newline',
+  "charset",
+  "end_of_line",
+  "indent_size",
+  "indent_style",
+  "insert_final_newline",
   // 'tab_width' // This should be an integer, not a string.
-  'trim_trailing_whitespace',
+  "trim_trailing_whitespace",
 ];
 const knownProps = new Set<string>(knownPropNames);
 
@@ -140,7 +146,7 @@ function getConfigFileNames(filepath: string, options: ParseOptions): string[] {
   do {
     filepath = path.dirname(filepath);
     paths.push(path.join(filepath, options.config as string));
-  } while (filepath !== options.root);
+  } while (filepath !== options.root && filepath !== path.dirname(filepath));
   return paths;
 }
 
@@ -156,29 +162,29 @@ function processMatches(matches: Props, version: string): Props {
   // Set indent_size to 'tab' if indent_size is unspecified and
   // indent_style is set to 'tab'.
   if (
-    'indent_style' in matches &&
-    matches.indent_style === 'tab' &&
-    !('indent_size' in matches) &&
-    (version === EDITORCONFIG_VERSION || semver.gte(version, '0.10.0'))
+    "indent_style" in matches &&
+    matches.indent_style === "tab" &&
+    !("indent_size" in matches) &&
+    (version === EDITORCONFIG_VERSION || semver.gte(version, "0.10.0"))
   ) {
-    matches.indent_size = 'tab';
+    matches.indent_size = "tab";
   }
 
   // Set tab_width to indent_size if indent_size is specified and
   // tab_width is unspecified
   if (
-    'indent_size' in matches &&
-    !('tab_width' in matches) &&
-    matches.indent_size !== 'tab'
+    "indent_size" in matches &&
+    !("tab_width" in matches) &&
+    matches.indent_size !== "tab"
   ) {
     matches.tab_width = matches.indent_size;
   }
 
   // Set indent_size to tab_width if indent_size is 'tab'
   if (
-    'indent_size' in matches &&
-    'tab_width' in matches &&
-    matches.indent_size === 'tab'
+    "indent_size" in matches &&
+    "tab_width" in matches &&
+    matches.indent_size === "tab"
   ) {
     matches.indent_size = matches.tab_width;
   }
@@ -187,7 +193,7 @@ function processMatches(matches: Props, version: string): Props {
 }
 
 function buildFullGlob(pathPrefix: string, glob: string): Minimatch {
-  switch (glob.indexOf('/')) {
+  switch (glob.indexOf("/")) {
     case -1:
       glob = `**/${glob}`;
       break;
@@ -200,10 +206,10 @@ function buildFullGlob(pathPrefix: string, glob: string): Minimatch {
   //
   // braces_escaped_backslash2
   // backslash_not_on_windows
-  glob = glob.replace(/\\\\/g, '\\\\\\\\');
+  glob = glob.replace(/\\\\/g, "\\\\\\\\");
   //
   // star_star_over_separator{1,3,5,6,9,15}
-  glob = glob.replace(/\*\*/g, '{*,**/**/**}');
+  glob = glob.replace(/\*\*/g, "{*,**/**/**}");
 
   // NOT path.join.  Must stay in forward slashes.
   return new Minimatch(`${pathPrefix}/${glob}`, matchOptions);
@@ -218,7 +224,7 @@ function buildFullGlob(pathPrefix: string, glob: string): Minimatch {
  * @returns
  */
 function normalizeProps(options: SectionBody): Props {
-  const props: Props = {};
+  const props: Props = Object.create(null);
   for (const key in options) {
     if (Object.prototype.hasOwnProperty.call(options, key)) {
       const value = options[key];
@@ -233,7 +239,7 @@ function normalizeProps(options: SectionBody): Props {
       } catch (_e) {
         // Ignored
       }
-      if (typeof value2 === 'undefined' || value2 === null) {
+      if (typeof value2 === "undefined" || value2 === null) {
         //
         // null and undefined are values specific to JSON (no special meaning
         // in editorconfig) & should just be returned as regular strings.
@@ -243,6 +249,51 @@ function normalizeProps(options: SectionBody): Props {
     }
   }
   return props;
+}
+
+/**
+ * Section globs are matched against paths that are already relative to the
+ * directory holding the `.editorconfig` file, so no glob can ever refer to a
+ * parent directory.  The glob engines do not resolve a `..` component against
+ * that path though; they let it consume any one directory level.  That makes a
+ * section such as `[dir/../x.c]` match `x.c` sitting next to the config file,
+ * even though `x.c` is not inside `dir`.  Detect those components so the
+ * section can be rejected.
+ *
+ * @param glob Section name, as written in the config file.
+ * @returns True if the glob has an unescaped `..` path component.
+ */
+function hasParentDirComponent(glob: string): boolean {
+  return glob.split("/").some((part) => {
+    let name = "";
+    for (let i = 0; i < part.length; i++) {
+      if (part[i] === "\\") {
+        // A backslash escapes the next character, so it is a literal.
+        i++;
+      } else {
+        name += part[i];
+      }
+    }
+    return name === "..";
+  });
+}
+
+/**
+ * Build the matcher for a single section of a config file.
+ *
+ * The global section has no name and never matches a file, and a section whose
+ * glob names a parent directory cannot match a file below the config's own
+ * directory, so both get no matcher at all.
+ *
+ * @param pathPrefix Escaped path of the directory holding the config file.
+ * @param name Section name, as written in the config file.
+ * @returns The section's matcher, or null if it cannot match anything.
+ */
+function buildSectionGlob(pathPrefix: string, name: SectionName): SectionGlob {
+  if (!name || hasParentDirComponent(name)) {
+    return null;
+  }
+  return buildFullGlob(pathPrefix, name);
 }
 
 /**
@@ -258,7 +309,7 @@ function normalizeProps(options: SectionBody): Props {
 function processFileContents(
   filepath: string,
   contents: Buffer | undefined,
-  options: ParseOptions
+  options: ParseOptions,
 ): ProcessedFileConfig {
   let res: ProcessedFileConfig | undefined = undefined;
   // eslint-disable-next-line no-negated-condition
@@ -268,24 +319,24 @@ function processFileContents(
       root: false,
       notfound: true,
       name: filepath,
-      config: [[null, {}, null]],
+      config: [[null, Object.create(null), null]],
     };
   } else {
     let pathPrefix = path.dirname(filepath);
 
-    if (path.sep !== '/') {
+    if (path.sep !== "/") {
       // Windows-only
-      pathPrefix = pathPrefix.replace(escapedSep, '/');
+      pathPrefix = pathPrefix.replace(escapedSep, "/");
     }
 
     // Use minimatch's escape() with bracket escaping for the path prefix.
-    pathPrefix = escape(pathPrefix, {windowsPathsNoEscape: true});
-    pathPrefix = pathPrefix.replace(/^#/, '[#]');
+    pathPrefix = escape(pathPrefix, { windowsPathsNoEscape: true });
+    pathPrefix = pathPrefix.replace(/^#/, "[#]");
 
     const globbed: GlobbedProps = parseBuffer(contents).map(([name, body]) => [
       name,
       normalizeProps(body),
-      name ? buildFullGlob(pathPrefix, name) : null,
+      buildSectionGlob(pathPrefix, name),
     ]);
 
     res = {
@@ -301,24 +352,28 @@ function processFileContents(
 }
 
 /**
- * Get a file from the cache, or read its contents from disk, process, and
- * insert into the cache (if configured).
+ * Reads of config files that are in progress, per cache, so that concurrent
+ * lookups of the same file share one read.  Entries are removed once the read
+ * settles; the finished result lives in the cache.
+ */
+const pendingConfigs = new WeakMap<
+  Cache,
+  Map<string, Promise<ProcessedFileConfig>>
+>();
+
+/**
+ * Read a config file's contents from disk, process, and insert into the cache
+ * (if configured).
  *
  * @param filepath The fully-qualified path of the config file.
  * @param options Access to the cache, if configured.
- * @returns The processed file, or undefined if there was an error reading it.
+ * @returns The processed file.
  */
-async function getConfig(
+async function readConfig(
   filepath: string,
-  options: ParseOptions
+  options: ParseOptions,
 ): Promise<ProcessedFileConfig> {
-  if (options.cache) {
-    const cached = options.cache.get(filepath);
-    if (cached) {
-      return cached;
-    }
-  }
-  const contents = await new Promise<Buffer | undefined>(resolve => {
+  const contents = await new Promise<Buffer | undefined>((resolve) => {
     fs.readFile(filepath, (_, buf) => {
       // Ignore errors.  contents will be undefined
       // Perhaps only file-not-found should be ignored?
@@ -326,6 +381,44 @@ async function getConfig(
     });
   });
   return processFileContents(filepath, contents, options);
+}
+
+/**
+ * Get a file from the cache, or read its contents from disk, process, and
+ * insert into the cache (if configured).  If the cache is configured,
+ * concurrent calls for the same file share one read.
+ *
+ * @param filepath The fully-qualified path of the config file.
+ * @param options Access to the cache, if configured.
+ * @returns The processed file, or undefined if there was an error reading it.
+ */
+async function getConfig(
+  filepath: string,
+  options: ParseOptions,
+): Promise<ProcessedFileConfig> {
+  if (!options.cache) {
+    return readConfig(filepath, options);
+  }
+  const cached = options.cache.get(filepath);
+  if (cached) {
+    return cached;
+  }
+  let pending = pendingConfigs.get(options.cache);
+  if (!pending) {
+    pending = new Map();
+    pendingConfigs.set(options.cache, pending);
+  }
+  let config = pending.get(filepath);
+  if (!config) {
+    config = readConfig(filepath, options);
+    pending.set(filepath, config);
+    try {
+      return await config;
+    } finally {
+      pending.delete(filepath);
+    }
+  }
+  return config;
 }
 
 /**
@@ -338,7 +431,7 @@ async function getConfig(
  */
 function getConfigSync(
   filepath: string,
-  options: ParseOptions
+  options: ParseOptions,
 ): ProcessedFileConfig {
   if (options.cache) {
     const cached = options.cache.get(filepath);
@@ -366,7 +459,7 @@ function getConfigSync(
  */
 async function getAllConfigs(
   files: string[],
-  options: ParseOptions
+  options: ParseOptions,
 ): Promise<ProcessedFileConfig[]> {
   const configs: ProcessedFileConfig[] = [];
   for (const file of files) {
@@ -391,7 +484,7 @@ async function getAllConfigs(
  */
 function getAllConfigsSync(
   files: string[],
-  options: ParseOptions
+  options: ParseOptions,
 ): ProcessedFileConfig[] {
   const configs: ProcessedFileConfig[] = [];
   for (const file of files) {
@@ -413,15 +506,15 @@ function getAllConfigsSync(
  * @param options Potentially-incomplete options.
  * @returns The fully-qualified target file name and the normalized options.
  */
-function opts(filepath: string, options: ParseOptions = {}): [
-  fileName: string,
-  normalizedOptions: ParseOptions,
-] {
+function opts(
+  filepath: string,
+  options: ParseOptions = {},
+): [fileName: string, normalizedOptions: ParseOptions] {
   const resolvedFilePath = path.resolve(filepath);
   return [
     resolvedFilePath,
     {
-      config: options.config || '.editorconfig',
+      config: options.config || ".editorconfig",
       version: options.version || EDITORCONFIG_VERSION,
       root: path.resolve(options.root || path.parse(resolvedFilePath).root),
       files: options.files,
@@ -441,7 +534,7 @@ function opts(filepath: string, options: ParseOptions = {}): [
 export function unset(props: Props): void {
   const keys = Object.keys(props);
   for (const k of keys) {
-    if (props[k] === 'unset') {
+    if (props[k] === "unset") {
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete props[k];
     }
@@ -460,7 +553,7 @@ export function unset(props: Props): void {
 function combine(
   filepath: string,
   configs: ProcessedFileConfig[],
-  options: ParseOptions
+  options: ParseOptions,
 ): Props {
   const ret = configs.reverse().reduce((props: Props, processed) => {
     for (const [name, body, glob] of processed.config) {
@@ -475,7 +568,7 @@ function combine(
       }
     }
     return props;
-  }, {});
+  }, Object.create(null));
 
   if (options.unset) {
     unset(ret);
@@ -497,13 +590,14 @@ function combine(
 export function parseFromFilesSync(
   filepath: string,
   files: ECFile[],
-  options: ParseOptions = {}
+  options: ParseOptions = {},
 ): Props {
   const [resolvedFilePath, processedOptions] = opts(filepath, options);
   const configs = [];
   for (const ecf of files) {
     let cfg: ProcessedFileConfig | undefined = undefined;
-    if (!options.cache || !(cfg = options.cache.get(ecf.name))) { // Single "="!
+    if (!options.cache || !(cfg = options.cache.get(ecf.name))) {
+      // Single "="!
       cfg = processFileContents(ecf.name, ecf.contents, processedOptions);
     }
     if (!cfg.notfound) {
@@ -530,7 +624,7 @@ export function parseFromFilesSync(
 export async function parseFromFiles(
   filepath: string,
   files: Promise<ECFile[]>,
-  options: ParseOptions = {}
+  options: ParseOptions = {},
 ): Promise<Props> {
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   return parseFromFilesSync(filepath, await files, options);
@@ -546,7 +640,7 @@ export async function parseFromFiles(
  */
 export async function parse(
   filepath: string,
-  options: ParseOptions = {}
+  options: ParseOptions = {},
 ): Promise<Props> {
   const [resolvedFilePath, processedOptions] = opts(filepath, options);
   const filepaths = getConfigFileNames(resolvedFilePath, processedOptions);
@@ -562,10 +656,7 @@ export async function parse(
  * @param options All options
  * @returns Combined properties for the target file
  */
-export function parseSync(
-  filepath: string,
-  options: ParseOptions = {}
-): Props {
+export function parseSync(filepath: string, options: ParseOptions = {}): Props {
   const [resolvedFilePath, processedOptions] = opts(filepath, options);
   const filepaths = getConfigFileNames(resolvedFilePath, processedOptions);
   const configs = getAllConfigsSync(filepaths, processedOptions);
@@ -589,12 +680,14 @@ export function matcher(
   options: ParseOptions,
   ...buffers: Buffer[]
 ): (filepath: string) => Props {
-  const [_fileName, processedOptions] = opts('', options);
-  const configs = buffers.map((buf, i) => processFileContents(
-    path.join(processedOptions.root as string, `buffer-${i}`),
-    buf,
-    processedOptions
-  ));
+  const [_fileName, processedOptions] = opts("", options);
+  const configs = buffers.map((buf, i) =>
+    processFileContents(
+      path.join(processedOptions.root as string, `buffer-${i}`),
+      buf,
+      processedOptions,
+    ),
+  );
   return (filepath: string) => {
     const resolvedFilePath = path.resolve(filepath);
     return combine(resolvedFilePath, configs, processedOptions);
@@ -607,4 +700,4 @@ export {
   type SectionName,
   type SectionBody,
   type ParseStringResult,
-} from './parse.ts';
+} from "./parse.ts";
