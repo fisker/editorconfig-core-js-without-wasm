@@ -39,13 +39,13 @@ describe('parse', () => {
   });
 
   it('stops at the filesystem root when the configured root is not an ancestor', async () => {
-    const root = path.join(__dirname, 'not-an-ancestor');
+    const root = path.join(import.meta.dirname, 'not-an-ancestor');
     const cfg = await editorconfig.parse(target, {root});
     expect(cfg).to.eql(expected);
   });
 
   it('stops at the filesystem root synchronously when the configured root is not an ancestor', () => {
-    const root = path.join(__dirname, 'not-an-ancestor');
+    const root = path.join(import.meta.dirname, 'not-an-ancestor');
     const cfg = editorconfig.parseSync(target, {root});
     expect(cfg).to.eql(expected);
   });
