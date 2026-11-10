@@ -15,7 +15,7 @@ export type ParseStringResult = [SectionName, SectionBody][];
  * @returns Parsed contents.  Will be truncated if there was a parse error.
  */
 export function parseString(data: string): ParseStringResult {
-  const root: SectionBody = {};
+  const root: SectionBody = Object.create(null);
   const result: ParseStringResult = [[null, root]];
 
   let parsed: Results | undefined = undefined;
