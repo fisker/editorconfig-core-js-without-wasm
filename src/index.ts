@@ -7,7 +7,7 @@ import {Buffer} from 'node:buffer';
 
 import {type SectionBody, type SectionName, parseBuffer} from './parse.ts';
 
-const EDITORCONFIG_VERSION = '3.0.2';
+const EDITORCONFIG_VERSION = '4.0.0';
 const escapedSep = new RegExp(path.sep.replace(/\\/g, '\\\\'), 'g');
 const matchOptions = {matchBase: true, dot: true};
 
